@@ -70,6 +70,14 @@ public class BiosMenuPatch
                 });
                 input.gameObject.SetActive(false);
             }
+            if (DataUtils.publicAddress == null)
+            {
+                DataUtils.publicAddress = PlayerClient.Singleton.publicAddress;
+            }
+            if (DataUtils.nightlyAddress == null)
+            {
+                DataUtils.nightlyAddress = PlayerClient.Singleton.nightlyAddress;
+            }
         }
         private static void ShowHideInput(bool isOn)
         {

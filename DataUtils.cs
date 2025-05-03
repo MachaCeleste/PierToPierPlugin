@@ -23,6 +23,8 @@ namespace PierToPierPlugin
         public static bool hosting;
         public static string hostPortString;
         public static int hostPort = 21200;
+        public static string publicAddress;
+        public static string nightlyAddress;
         public static P2PDatabase database;
         public static WebhookHandler webHookHandler;
         public static WebhookHandler adminWebHookHandler;
@@ -127,7 +129,7 @@ namespace PierToPierPlugin
 
         public static bool IsCustomServer()
         {
-            if (!string.IsNullOrEmpty(server) && server != PlayerClient.Singleton.publicAddress && server != PlayerClient.Singleton.nightlyAddress)
+            if (!string.IsNullOrEmpty(server) && server != publicAddress && server != nightlyAddress)
             {
                 return true;
             }

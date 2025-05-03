@@ -125,6 +125,15 @@ namespace PierToPierPlugin
             return false;
         }
 
+        public static bool IsCustomServer()
+        {
+            if (!string.IsNullOrEmpty(server) && server != PlayerClient.Singleton.publicAddress && server != PlayerClient.Singleton.nightlyAddress)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static int GetClientVersion()
         {
             Type typeInfo = AccessTools.TypeByName("Util.GameConfig");

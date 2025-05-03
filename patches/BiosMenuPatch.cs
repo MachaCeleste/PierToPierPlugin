@@ -3,10 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using PierToPierPlugin;
-using System.Net;
 using System.Collections;
 using System.Reflection;
-using Jint.Parser.Ast;
 
 [HarmonyPatch]
 public class BiosMenuPatch

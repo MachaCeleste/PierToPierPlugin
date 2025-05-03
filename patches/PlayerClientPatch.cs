@@ -1,10 +1,8 @@
 ﻿using PierToPierPlugin;
 using HarmonyLib;
 using Util;
-using System.Collections;
 using System.Reflection.Emit;
 using System.Collections.Generic;
-using static Util.Networking;
 
 [HarmonyPatch]
 public class PlayerClientPatch
@@ -14,7 +12,7 @@ public class PlayerClientPatch
     {
         static void Prefix(PlayerClient __instance)
         {
-            if (!Networking.IsSinglePlayer() && !string.IsNullOrEmpty(DataUtils.server))
+            if (!Networking.IsSinglePlayer() && DataUtils.IsCustomServer())
             {
                 if (__instance.serverMode == PlayerClient.ServerMode.PUBLIC)
                     __instance.publicAddress = DataUtils.server;

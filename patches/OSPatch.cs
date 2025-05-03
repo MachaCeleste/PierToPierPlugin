@@ -13,7 +13,7 @@ public class OSPatch
     {
         static bool Prefix()
         {
-            if (!Networking.IsSinglePlayer() && !string.IsNullOrEmpty(DataUtils.server))
+            if (!Networking.IsSinglePlayer() && DataUtils.IsCustomServer())
             {
                 var dialog = uDialog.NewDialog("ServerRulesPreferences", UnityEngine.Object.FindObjectOfType<DesktopFinder>().GetComponent<RectTransform>());
                 dialog.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 700);

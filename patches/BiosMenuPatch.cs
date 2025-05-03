@@ -186,6 +186,7 @@ public class BiosMenuPatch
             {
                 if (DataUtils.TryParseHost(DataUtils.host, out string ip, out int port, out string error))
                 {
+                    DataUtils.host = "";
                     DataUtils.server = ip;
                     DataUtils.port = port;
                 }
@@ -197,6 +198,11 @@ public class BiosMenuPatch
                     __result = CleanRes();
                     return false;
                 }
+            }
+            else if (currentGameMode == GameMode.Multiplayer)
+            {
+                DataUtils.server = "";
+                DataUtils.port = 21200;
             }
             return true;
         }

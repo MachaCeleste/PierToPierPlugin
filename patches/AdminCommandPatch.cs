@@ -65,6 +65,9 @@ public class AdminCommandPatch
                 case AdminAction.SHOW_BANK_TRANSACTIONS:
                     ShowBankTransactionsServerRpc(playerServer, m.GetInt(), m.GetString());
                     break;
+                case AdminAction.DELETE_NETWORK:
+                    DeleteNetworkServerRpc(playerServer, m.GetInt(), m.GetString());
+                    break;
             }
         }
         catch (Exception message)
@@ -149,7 +152,7 @@ public class AdminCommandPatch
     private static void LockCTFServerRpc(PlayerServer playerServer, int windowId, string ctfName)
     {
         CTF_Event ctfEvent = Database.Singleton.GetEvent(ctfName);
-        if (ctfEvent ==  null)
+        if (ctfEvent == null)
         {
             AdminMessageHandler.SendTextClient(playerServer, windowId, "CTF Mission not found");
             return;
@@ -319,7 +322,7 @@ public class AdminCommandPatch
         AdminMessageHandler.SendTextClient(playerServer, windowId, $"Player {playerId} all payments removed.");
     }
 
-    private static void WarnPlayerServerRpc(PlayerServer playerServer,  int windowId, string playerId, string reason)
+    private static void WarnPlayerServerRpc(PlayerServer playerServer, int windowId, string playerId, string reason)
     {
         ulong.TryParse(playerId, out ulong steamId);
         if (steamId != 0)
@@ -438,6 +441,12 @@ public class AdminCommandPatch
                         $"-------\n";
             }
         }
-        AdminMessageHandler.SendTextClient(playerServer, windowId, output );
+        AdminMessageHandler.SendTextClient(playerServer, windowId, output);
+    }
+
+    private static void DeleteNetworkServerRpc(PlayerServer playerServer, int windowId, string ipAddress)
+    {
+        Database.Singleton.DeleteNetwork(ipAddress);
+        AdminMessageHandler.SendTextClient(playerServer, windowId, $"Network {ipAddress} deleted!");
     }
 }

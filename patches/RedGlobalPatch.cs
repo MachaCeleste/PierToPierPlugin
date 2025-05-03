@@ -45,12 +45,12 @@ public class RedGlobalPatch
                 if (!string.IsNullOrEmpty(DataUtils.database.webHookUrl))
                 {
                     DataUtils.webHookHandler = new WebhookHandler(DataUtils.database.webHookUrl);
-                    DataUtils.webHookHandler?.SendEmbedAsync("SERVER STATUS", $"Server Online! P2P: v{MyPluginInfo.PLUGIN_VERSION}");
+                    DataUtils.webHookHandler?.SendEmbedAsync("SERVER STATUS", $"Server Online! P2P: v{MyPluginInfo.PLUGIN_VERSION} Game: v{DataUtils.GetGameVersion()}");
                 }
                 if (!string.IsNullOrEmpty(DataUtils.database.adminWebHookUrl))
                 {
                     DataUtils.adminWebHookHandler = new WebhookHandler(DataUtils.database.adminWebHookUrl);
-                    DataUtils.adminWebHookHandler?.SendEmbedAsync("SERVER STATUS", $"Server Online! P2P: v{MyPluginInfo.PLUGIN_VERSION}");
+                    DataUtils.adminWebHookHandler?.SendEmbedAsync("SERVER STATUS", $"Server Online! P2P: v{MyPluginInfo.PLUGIN_VERSION} Game: v{DataUtils.GetGameVersion()}");
                 }
             }
         }

@@ -18,9 +18,7 @@ public class PlayerHelperServerPatch
         static bool Prefix(ref byte[] ticketBinary, ref ulong steamID, ref int clientVersion, ref PlayerServer player, ref bool __result)
         {
             MessageClient messageClient = new MessageClient(IdClient.DisconnectMessageClientRpc);
-            Type gameConfigType = AccessTools.TypeByName("Util.GameConfig");
-            FieldInfo versionClientField = gameConfigType?.GetField("VersionClient", BindingFlags.Public | BindingFlags.Static);
-            if (clientVersion != (int)versionClientField.GetValue(null))
+            if (clientVersion != DataUtils.GetClientVersion())
             {
                 messageClient.AddString("<color=red>A new game update is available.</color>\n\nIt's necessary that you update the game to be able to connect to the server.\nIf the update is not ready please restart your Steam client.");
                 player.SendData(messageClient);

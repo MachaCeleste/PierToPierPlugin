@@ -125,6 +125,20 @@ namespace PierToPierPlugin
             return false;
         }
 
+        public static int GetClientVersion()
+        {
+            Type typeInfo = AccessTools.TypeByName("Util.GameConfig");
+            FieldInfo fieldInfo = typeInfo?.GetField("VersionClient", BindingFlags.Public | BindingFlags.Static);
+            return (int)fieldInfo.GetValue(null);
+        }
+
+        public static string GetGameVersion()
+        {
+            Type typeInfo = AccessTools.TypeByName("Util.GameConfig");
+            FieldInfo fieldInfo = typeInfo?.GetField("gameVersion", BindingFlags.Public | BindingFlags.Static);
+            return fieldInfo.GetValue(null) as string;
+        }
+
         public static Util.Roles GetRole(string playerId)
         {
             Util.Roles role = Util.Roles.EVERYONE;

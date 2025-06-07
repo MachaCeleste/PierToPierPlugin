@@ -1,10 +1,14 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using PierToPierPlugin;
 using System.Collections;
 using System.Reflection;
+using System.Collections.Generic;
+using BepInEx;
+using BepInEx.Bootstrap;
+using UnityEngine.UI;
+using System.Linq;
 
 [HarmonyPatch]
 public class BiosMenuPatch
@@ -20,6 +24,54 @@ public class BiosMenuPatch
     private static TMP_InputField inputServerComp;
     private static Toggle inputToggleComp;
 
+    private static GameObject CreateToggle(string name, string label, GameObject parent, GameObject template, Vector2 offset)
+    {
+        GameObject toggle = Object.Instantiate(template);
+        toggle.transform.SetParent(parent.transform, false);
+        toggle.name = name;
+        if (offset != Vector2.zero)
+        {
+            var rect = toggle.GetComponent<RectTransform>();
+            rect.anchoredPosition = offset;
+        }
+        var toggleComp = toggle.GetComponent<Toggle>();
+        toggleComp.isOn = false;
+        var text = toggle.GetComponentInChildren<TMP_Text>();
+        text.text = label;
+        return toggle;
+    }
+
+    private static GameObject CreateInputBox(string name, string placeholder, GameObject parent, Vector2 deltaSize, Vector2 offset, Color backColor)
+    {
+        GameObject inputBox = new GameObject(name);
+        inputBox.transform.SetParent(parent.transform, false);
+        var rect = inputBox.AddComponent<RectTransform>();
+        rect.anchoredPosition = offset;
+        var inputComp = inputBox.AddComponent<TMP_InputField>();
+        inputComp.richText = false;
+        var inputLayout = inputBox.AddComponent<LayoutElement>();
+        inputLayout.preferredHeight = 60;
+        var inputBackground = new GameObject("Background");
+        inputBackground.transform.SetParent(inputBox.transform, false);
+        var inputBackRect = inputBackground.AddComponent<RectTransform>();
+        inputBackRect.sizeDelta = deltaSize;
+        var inputImage = inputBackground.AddComponent<Image>();
+        inputImage.color = backColor;
+        inputComp.image = inputImage;
+        var inputText = new GameObject("InputText");
+        inputText.transform.SetParent(inputBox.transform, false);
+        var inputTextGUI = inputText.AddComponent<TextMeshProUGUI>();
+        inputTextGUI.alignment = TextAlignmentOptions.Center;
+        inputComp.textComponent = inputTextGUI;
+        var inputPlaceholder = new GameObject("Placeholder");
+        inputPlaceholder.transform.SetParent(inputBox.transform, false);
+        var inputPlaceText = inputPlaceholder.AddComponent<TextMeshProUGUI>();
+        inputPlaceText.alignment = TextAlignmentOptions.Center;
+        inputPlaceText.text = placeholder;
+        inputComp.placeholder = inputPlaceText;
+        return inputBox;
+    }
+
     [HarmonyPatch(typeof(BiosMenu), "Start")]
     class StartPatch
     {
@@ -29,7 +81,7 @@ public class BiosMenuPatch
             GameObject toggle = GameObject.Find("ToggleDeletePlayer");
             if (GameObject.Find("ToggleHostServer") == null)
             {
-                hostToggle = CreateToggle("ToggleHostServer", "Host Server", panel, toggle, new Vector2(201, 350));
+                hostToggle = CreateToggle("ToggleHostServer", "Host Server", panel, toggle, Vector2.zero);
                 hostToggleComp = hostToggle.GetComponent<Toggle>();
                 hostToggleComp.onValueChanged.AddListener((isOn) =>
                 {
@@ -51,7 +103,7 @@ public class BiosMenuPatch
             }
             if (GameObject.Find("ToggleHideServer") == null)
             {
-                inputToggle = CreateToggle("ToggleHideServer", "Hide IP", panel, toggle, new Vector2(201, 350));
+                inputToggle = CreateToggle("ToggleHideServer", "Hide IP", panel, toggle, Vector2.zero);
                 inputToggleComp = inputToggle.GetComponent<Toggle>();
                 inputToggleComp.onValueChanged.AddListener((isOn) =>
                 {
@@ -79,6 +131,7 @@ public class BiosMenuPatch
                 DataUtils.nightlyAddress = PlayerClient.Singleton.nightlyAddress;
             }
         }
+
         private static void ShowHideInput(bool isOn)
         {
             if (isOn)
@@ -86,47 +139,6 @@ public class BiosMenuPatch
             if (!isOn)
                 inputServerComp.inputType = TMP_InputField.InputType.Standard;
             inputServerComp.ForceLabelUpdate();
-        }
-        private static GameObject CreateToggle(string name, string label, GameObject parent, GameObject template, Vector2 offset)
-        {
-            GameObject toggle = Object.Instantiate(template);
-            toggle.transform.SetParent(parent.transform, false);
-            toggle.name = name;
-            var toggleComp = toggle.GetComponent<Toggle>();
-            toggleComp.isOn = false;
-            var text = toggle.GetComponentInChildren<TMP_Text>();
-            text.text = label;
-            return toggle;
-        }
-        private static GameObject CreateInputBox(string name, string placeholder, GameObject parent, Vector2 deltaSize, Vector2 offset, Color backColor)
-        {
-            GameObject inputBox = new GameObject(name);
-            inputBox.transform.SetParent(parent.transform, false);
-            var rect = inputBox.AddComponent<RectTransform>();
-            rect.anchoredPosition = offset;
-            var inputComp = inputBox.AddComponent<TMP_InputField>();
-            inputComp.richText = false;
-            var inputLayout = inputBox.AddComponent<LayoutElement>();
-            inputLayout.preferredHeight = 60;
-            var inputBackground = new GameObject("Background");
-            inputBackground.transform.SetParent(inputBox.transform, false);
-            var inputBackRect = inputBackground.AddComponent<RectTransform>();
-            inputBackRect.sizeDelta = deltaSize;
-            var inputImage = inputBackground.AddComponent<Image>();
-            inputImage.color = backColor;
-            inputComp.image = inputImage;
-            var inputText = new GameObject("InputText");
-            inputText.transform.SetParent(inputBox.transform, false);
-            var inputTextGUI = inputText.AddComponent<TextMeshProUGUI>();
-            inputTextGUI.alignment = TextAlignmentOptions.Center;
-            inputComp.textComponent = inputTextGUI;
-            var inputPlaceholder = new GameObject("Placeholder");
-            inputPlaceholder.transform.SetParent(inputBox.transform, false);
-            var inputPlaceText = inputPlaceholder.AddComponent<TextMeshProUGUI>();
-            inputPlaceText.alignment = TextAlignmentOptions.Center;
-            inputPlaceText.text = placeholder;
-            inputComp.placeholder = inputPlaceText;
-            return inputBox;
         }
     }
 
@@ -243,6 +255,36 @@ public class BiosMenuPatch
                 inputToggle.SetActive(false);
             if (hostToggle != null)
                 hostToggle.SetActive(true);
+            bool flag = false;
+            foreach (KeyValuePair<string, PluginInfo> kvp in Chainloader.PluginInfos)
+            {
+                PluginInfo info = kvp.Value;
+                if (info.Metadata.Name.ToLower() == "saveselectplugin")
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag)
+            {
+                var panelType = AccessTools.TypeByName("SaveSelectPlugin.SavePanel");
+                var parent = (Component)GameObject.FindObjectsOfType(typeof(MonoBehaviour), true).FirstOrDefault(x => x.GetType() == panelType);
+                var toggle = parent.transform.Find("ScrollView/Viewport/Content/SaveTemplate/Top/Wipe").gameObject;
+                if (parent != null && hostToggle.transform.parent.name != parent.transform.name)
+                {
+                    Plugin.Logger.LogInfo("SaveSelectPlugin found, relocating Host button...");
+                    hostToggle = CreateToggle("ToggleHostServer", "Host Server", parent.gameObject, toggle, new Vector2(420, -30));
+                    hostToggle.GetComponent<RectTransform>().sizeDelta = new Vector2(113, 20);
+                    hostToggleComp = hostToggle.GetComponent<Toggle>();
+                    hostToggleComp.onValueChanged.AddListener((isOn) =>
+                    {
+                        DataUtils.hosting = isOn;
+                        hostInputPort.gameObject.SetActive(isOn);
+                    });
+                }
+                else if (parent == null)
+                    Plugin.Logger.LogError("Couldn't find SavePanel!");
+            }
         }
     }
 

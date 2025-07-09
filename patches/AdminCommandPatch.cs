@@ -143,7 +143,7 @@ public class AdminCommandPatch
         {
             foreach (var ban in DataUtils.database.banList)
             {
-                output = $"Player ID: {ban.Key}\n";
+                output += $"Player ID: {ban.Key}\n";
             }
         }
         AdminMessageHandler.SendTextClient(playerServer, windowId, output);

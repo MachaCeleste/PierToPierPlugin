@@ -23,10 +23,6 @@ public class OSPatch
                 "<b>The second rule of fight club is YOU DO NOT TALK ABOUT FIGHT CLUB</b>.\r\n\r\n" +
                 "<b>•</b> <b>DO NOT CLUB NEW PEOPLE!</b>\n" +
                 "   Kindly inform them of their flaws and help them get better.\r\n\r\n" +
-                "<b>•</b> <b>DO NOT DESTROY PLAYER WEBSITES!</b>\n" +
-                "   Renaming their html and replacing it with your own is fine, leave it recoverable!\r\n\r\n" +
-                "<b>•</b> <b>DO NOT DESTROY PLAYER COMPUTERS!</b>\n" +
-                "   Hacking friends is fun but leave the system in a recoverable state!\r\n\r\n" +
                 "<b>The following content may not be published in multiplayer</b>:\r\n\r\n" +
                 "<b>•</b> Real personal information such as name, address, phone number, etc.\r\n\r\n" +
                 "<b>•</b> Harassment, discrimination and abuse such as but not limited to racism, transphobia or threats.\r\n\r\n" +

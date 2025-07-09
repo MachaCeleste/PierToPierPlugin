@@ -52,6 +52,11 @@ public class RedGlobalPatch
                     DataUtils.adminWebHookHandler = new WebhookHandler(DataUtils.database.adminWebHookUrl);
                     DataUtils.adminWebHookHandler?.SendEmbedAsync("SERVER STATUS", $"Server Online! P2P: v{MyPluginInfo.PLUGIN_VERSION} Game: v{DataUtils.GetGameVersion()}");
                 }
+                if (!string.IsNullOrEmpty(DataUtils.database.chatWebHookUrl))
+                {
+                    DataUtils.chatWebHookHandler = new WebhookHandler(DataUtils.database.chatWebHookUrl);
+                    DataUtils.chatWebHookHandler?.SendEmbedAsync("CHAT LOG STATUS", "Chat Logging active!");
+                }
             }
         }
     }

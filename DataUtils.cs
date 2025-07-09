@@ -28,6 +28,7 @@ namespace PierToPierPlugin
         public static P2PDatabase database;
         public static WebhookHandler webHookHandler;
         public static WebhookHandler adminWebHookHandler;
+        public static WebhookHandler chatWebHookHandler;
         public static Dictionary<string, ulong> playerList = new Dictionary<string, ulong>();
         public static readonly string link = "http://steamcommunity.com/profiles/";
 
@@ -56,6 +57,7 @@ namespace PierToPierPlugin
 
         public static void LogChat(string message, string nickName, string playerId, string ipServer, int port)
         {
+            DataUtils.chatWebHookHandler?.SendEmbedAsync($"Chat - {nickName}@{ipServer}:{port}", $"{message}");
             var dir = Path.Combine(Application.dataPath, "logs");
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
@@ -223,6 +225,7 @@ namespace PierToPierPlugin
         public string appealLink { get; set; }
         public string webHookUrl { get; set; }
         public string adminWebHookUrl { get; set; }
+        public string chatWebHookUrl { get; set; }
 
         public P2PDatabase()
         {
@@ -234,6 +237,7 @@ namespace PierToPierPlugin
             appealLink = string.Empty;
             webHookUrl = string.Empty;
             adminWebHookUrl = string.Empty;
+            chatWebHookUrl = string.Empty;
         }
     }
 

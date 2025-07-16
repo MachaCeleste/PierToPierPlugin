@@ -12,8 +12,8 @@ public class ChatHelperServerPatch
     private static string botName = "GreyChat";
     private static char cmdPrefix = '@';
 
-    [HarmonyPatch(typeof(ChatHelperServer), "SendChatMSgServerRpc")]
-    class SendChatMSgServerRpcPatch
+    [HarmonyPatch(typeof(ChatHelperServer), "SendChatMsgServerRpc")]
+    class SendChatMsgServerRpcPatch
     {
         static void Postfix(ChatHelperServer __instance, ref string message, ref string ipServer, ref int puerto, ref int windowPID)
         {

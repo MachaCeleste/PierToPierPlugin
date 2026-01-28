@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NetworkMessages;
 using Newtonsoft.Json;
 using PierToPierPlugin;
@@ -20,9 +20,9 @@ public class AdminCommandPatch
                 case AdminAction.SEARCH:
                     SearchPlayerServerRpc(playerServer, m.GetInt(), m.GetInt(), m.GetString());
                     break;
-                case AdminAction.SHOW_MUTED:
-                    ShowMutesServerRpc(playerServer, m.GetInt());
-                    break;
+                //case AdminAction.SHOW_MUTED:
+                //    ShowMutesServerRpc(playerServer, m.GetInt());
+                //    break;
                 case AdminAction.SHOW_BANNED:
                     ShowBansServerRpc(playerServer, m.GetInt());
                     break;
@@ -99,13 +99,14 @@ public class AdminCommandPatch
                     status = true;
                 break;
             case SearchType.COMPUTERID:
-                player = ServerListener.Singleton.GetPlayerFromComputer(data);
-                if (player == null)
-                {
-                    output = "Player must be online to search using computer ID";
-                    break;
-                }
-                playerId = player.GetPlayerID();
+                //player = ServerListener.Singleton.GetPlayerFromComputer(data); // Why is this missing
+                //if (player == null)
+                //{
+                //    output = "Player must be online to search using computer ID";
+                //    break;
+                //}
+                //playerId = player.GetPlayerID();
+                output = "This no longer works... Thanks Kuro";
                 status = true;
                 break;
         }
@@ -130,11 +131,11 @@ public class AdminCommandPatch
         AdminMessageHandler.SendTextClient(playerServer, windowId, output);
     }
 
-    private static void ShowMutesServerRpc(PlayerServer playerServer, int windowId)
-    {
-        var output = GlobalChat.Singleton.GetMutedUsers();
-        AdminMessageHandler.SendTextClient(playerServer, windowId, output);
-    }
+    //private static void ShowMutesServerRpc(PlayerServer playerServer, int windowId)
+    //{
+    //    var output = GlobalChat.Singleton.GetMutedUsers();
+    //    AdminMessageHandler.SendTextClient(playerServer, windowId, output);
+    //}
 
     private static void ShowBansServerRpc(PlayerServer playerServer, int windowId)
     {
@@ -269,8 +270,8 @@ public class AdminCommandPatch
                 text += $"Steam ID:\n{playerSteam.Value}\n" +
                         $"Player ID:\n{playerSteam.Key}\n" +
                         $"Role:\n{DataUtils.GetRole(player.playerID).ToString()}\n" +
-                        $"Nickname:\n" + (string.IsNullOrEmpty(nickname) ? "[Not Defined]" : nickname) + $"\n" +
-                        $"Muted:\n" + (string.IsNullOrEmpty(nickname) ? "N/A" : GlobalChat.Singleton.IsUserMuted(Database.Singleton.GetPlayerID(nickname))) + $"\n" +
+                        //$"Nickname:\n" + (string.IsNullOrEmpty(nickname) ? "[Not Defined]" : nickname) + $"\n" +
+                        //$"Muted:\n" + (string.IsNullOrEmpty(nickname) ? "N/A" : GlobalChat.Singleton.IsUserMuted(Database.Singleton.GetPlayerID(nickname))) + $"\n" +
                         $"Computer ID:\n{player.GetComputerID()}\n" +
                         $"-------\n";
             }

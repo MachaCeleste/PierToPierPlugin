@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using HarmonyLib;
 using NetworkMessages;
 using Newtonsoft.Json;
@@ -28,7 +28,7 @@ namespace PierToPierPlugin
         public static P2PDatabase database;
         public static WebhookHandler webHookHandler;
         public static WebhookHandler adminWebHookHandler;
-        public static WebhookHandler chatWebHookHandler;
+        //public static WebhookHandler chatWebHookHandler;
         public static Dictionary<string, ulong> playerList = new Dictionary<string, ulong>();
         public static readonly string link = "http://steamcommunity.com/profiles/";
 
@@ -55,19 +55,19 @@ namespace PierToPierPlugin
             Plugin.Logger.LogInfo("Database saved");
         }
 
-        public static void LogChat(string message, string nickName, string playerId, string ipServer, int port)
-        {
-            DataUtils.chatWebHookHandler?.SendEmbedAsync($"Chat - {nickName}@{ipServer}:{port}", $"{message}");
-            var dir = Path.Combine(Application.dataPath, "logs");
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-            DateTime timeNow = DateTime.Now;
-            string logFilePath = Path.Combine(dir, $"log{timeNow.ToString("yyyyMMdd")}.log");
-            string data = $"{timeNow.ToString("yyyyMMddHHmmss")}-{nickName}:{playerId}@{ipServer}:{port}> {message}";
-            if (File.Exists(logFilePath))
-                data = Environment.NewLine + data;
-            File.AppendAllText(logFilePath, data);
-        }
+        //public static void LogChat(string message, string nickName, string playerId, string ipServer, int port)
+        //{
+        //    DataUtils.chatWebHookHandler?.SendEmbedAsync($"Chat - {nickName}@{ipServer}:{port}", $"{message}");
+        //    var dir = Path.Combine(Application.dataPath, "logs");
+        //    if (!Directory.Exists(dir))
+        //        Directory.CreateDirectory(dir);
+        //    DateTime timeNow = DateTime.Now;
+        //    string logFilePath = Path.Combine(dir, $"log{timeNow.ToString("yyyyMMdd")}.log");
+        //    string data = $"{timeNow.ToString("yyyyMMddHHmmss")}-{nickName}:{playerId}@{ipServer}:{port}> {message}";
+        //    if (File.Exists(logFilePath))
+        //        data = Environment.NewLine + data;
+        //    File.AppendAllText(logFilePath, data);
+        //}
 
         public static IPEndPoint GetIpFromClient(PlayerServer player)
         {
@@ -171,25 +171,25 @@ namespace PierToPierPlugin
             return role;
         }
 
-        public static void UpdateChatUser(string ownerClientID, string nickName, Util.Roles role)
-        {
-            FieldInfo chatsField = AccessTools.Field(typeof(GlobalChat), "currentChats");
-            var currentChats = chatsField.GetValue(GlobalChat.Singleton) as ConcurrentDictionary<string, List<GlobalChat.UserChat>>;
-            foreach (var channel in currentChats)
-            {
-                var user = channel.Value.FirstOrDefault(x => x.ownerPlayerID == ownerClientID);
-                if (user != null)
-                {
-                    user.nickName = nickName;
-                    user.role = role;
-                }
-                byte[] value = GCompressor.Zip(JsonConvert.SerializeObject(channel.Value));
-                MessageClient messageClient = new MessageClient(IdClient.SendChatUsersClientRpc);
-                messageClient.AddByte(value);
-                messageClient.AddString(channel.Key);
-                ServerListener.Singleton.SendToPlayers(messageClient);
-            }
-        }
+        //public static void UpdateChatUser(string ownerClientID, string nickName, Util.Roles role)
+        //{
+        //    FieldInfo chatsField = AccessTools.Field(typeof(GlobalChat), "currentChats");
+        //    var currentChats = chatsField.GetValue(GlobalChat.Singleton) as ConcurrentDictionary<string, List<GlobalChat.UserChat>>;
+        //    foreach (var channel in currentChats)
+        //    {
+        //        var user = channel.Value.FirstOrDefault(x => x.ownerPlayerID == ownerClientID);
+        //        if (user != null)
+        //        {
+        //            user.nickName = nickName;
+        //            user.role = role;
+        //        }
+        //        byte[] value = GCompressor.Zip(JsonConvert.SerializeObject(channel.Value));
+        //        MessageClient messageClient = new MessageClient(IdClient.SendChatUsersClientRpc);
+        //        messageClient.AddByte(value);
+        //        messageClient.AddString(channel.Key);
+        //        ServerListener.Singleton.SendToPlayers(messageClient);
+        //    }
+        //}
 
         public static KeyValuePair<bool, string> CheckSteamAuth(byte[] ticketBinary, ulong steamId)
         {

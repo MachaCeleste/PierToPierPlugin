@@ -1,4 +1,4 @@
-﻿using PierToPierPlugin;
+using PierToPierPlugin;
 using HarmonyLib;
 using Util;
 using NetworkMessages;
@@ -30,7 +30,7 @@ public class PlayerServerPatch
             if (__instance.playerID == null) return;
             ulong steamID = DataUtils.playerList[__instance.playerID];
             DataUtils.playerList.Remove(__instance.playerID);
-            __instance.chatHelper.ExitChat();
+            //__instance.chatHelper.ExitChat();
             string data = $"Player left! {DataUtils.link + steamID.ToString()}";
             DataUtils.adminWebHookHandler?.SendEmbedAsync("Server Info", data);
             Plugin.Logger.LogInfo(data);

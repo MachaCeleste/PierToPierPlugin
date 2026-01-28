@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using NetworkMessages;
 using Newtonsoft.Json;
 using PierToPierPlugin;
@@ -125,35 +125,35 @@ public class PlayerHelperServerPatch
         }
     }
 
-    [HarmonyPatch(typeof(PlayerHelperServer), "RestoreHomeUser")]
-    class RestoreHomeUserPatch
-    {
-        static bool Prefix(PlayerServer __instance, ref PlayerComputer pc, ref string username)
-        {
-            FileSystem.Carpeta lastFolder = pc.GetFileSystem().GetLastFolder("/home/" + username + "/Desktop", username, false);
-            List<string> list = new List<string>
-            {
-                "FileExplorer",
-                "Terminal",
-                "Map",
-                "Mail",
-                "Browser",
-                "Notepad",
-                "Manual",
-                "CodeEditor",
-                "Chat"
-            };
-            for (int i = 0; i < list.Count; i++)
-            {
-                FileSystem.Archivo archivo = new FileSystem.Archivo(list[i], username, false);
-                string text = list[i].Replace(" ", "") + ".exe";
-                archivo.SetComando(text);
-                archivo.SetSymlink("/usr/bin/" + text);
-                lastFolder.AddFile(archivo);
-            }
-            return false;
-        }
-    }
+    //[HarmonyPatch(typeof(PlayerHelperServer), "RestoreHomeUser")]
+    //class RestoreHomeUserPatch
+    //{
+    //    static bool Prefix(PlayerServer __instance, ref PlayerComputer pc, ref string username)
+    //    {
+    //        FileSystem.Carpeta lastFolder = pc.GetFileSystem().GetLastFolder("/home/" + username + "/Desktop", username, false);
+    //        List<string> list = new List<string>
+    //        {
+    //            "FileExplorer",
+    //            "Terminal",
+    //            "Map",
+    //            "Mail",
+    //            "Browser",
+    //            "Notepad",
+    //            "Manual",
+    //            "CodeEditor",
+    //            "Chat"
+    //        };
+    //        for (int i = 0; i < list.Count; i++)
+    //        {
+    //            FileSystem.Archivo archivo = new FileSystem.Archivo(list[i], username, false);
+    //            string text = list[i].Replace(" ", "") + ".exe";
+    //            archivo.SetComando(text);
+    //            archivo.SetSymlink("/usr/bin/" + text);
+    //            lastFolder.AddFile(archivo);
+    //        }
+    //        return false;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(PlayerHelperServer), "EnableAdminServerRpc")]
     class EnableAdminServerRpcPatch
@@ -173,7 +173,7 @@ public class PlayerHelperServerPatch
                 setRole = DataUtils.GetRole(player.playerID);
                 roleField.SetValue(__instance, setRole);
             }
-            DataUtils.UpdateChatUser(player.playerID, player.chatHelper.GetNickName(), setRole);
+            //DataUtils.UpdateChatUser(player.playerID, player.chatHelper.GetNickName(), setRole);
             return false;
         }
     }
